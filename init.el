@@ -10,6 +10,7 @@
 ;; Add my personal elisp lib to the load path
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 
+(setq inhibit-splash-screen t)        ;; no splash screen at startup
 (setq inhibit-default-init t)         ;; disable loading of
                                       ;; "default.el" at startup
 
@@ -24,7 +25,9 @@
       (concat  "%b - emacs@" (system-name)))
 (setq diff-switches "-u")             ;; default to unified diffs
 (setq require-final-newline 'query)   ;; always end a file with a
-                                      ;;   newline 
+                                      ;;   newline
+(fset 'yes-or-no-p 'y-or-n-p)         ;; brevity
+
 ;; Try some mouse wheel settings
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil)))
 (setq mouse-wheel-progressive-speed nil)
@@ -83,8 +86,15 @@
   :init
   (ivy-mode 1))
 
+;; Magit - https://magit.vc/
+;;   Interface to Git
+;;(use-package magit
+;;  :ensure t
+;;  :bind ("C-x g" . magit-status)
+;;  )
+
 ;; Neotree - https://goo.gl/N05Cdj
-;; DIrectory browser like in Finder
+;; Directory browser like in Finder
 (use-package neotree
   :init
   (global-set-key [f8] 'neotree-toggle))
@@ -154,7 +164,7 @@
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
  '(package-selected-packages
    (quote
-    (powerline which-key use-package smartscan neotree ivy diffview)))
+    (magit powerline which-key use-package smartscan neotree ivy diffview)))
  '(sml/theme (quote dark)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
