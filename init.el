@@ -129,6 +129,15 @@
   :init
   (setq auto-mode-alist (cons '("\\.\\(pde\\|ino\\)$" . arduino-mode) auto-mode-alist)))
   
+;; smartscan
+(use-package smartscan
+  :init
+  (global-smartscan-mode 1))
+
+;; markdown-mode
+(use-package markdown-mode
+  :mode ("\\.\\(m\\(ark\\)?down\\|md\\)$" . markdown-mode)
+  :config)
 
 ;;--------------------------------------------------------------
 ;;
@@ -164,7 +173,7 @@
     ("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" default)))
  '(package-selected-packages
    (quote
-    (magit powerline which-key use-package smartscan neotree ivy diffview)))
+    (markdown-mode magit powerline which-key use-package smartscan neotree ivy diffview)))
  '(sml/theme (quote dark)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
