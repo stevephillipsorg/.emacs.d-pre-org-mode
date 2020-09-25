@@ -6,11 +6,12 @@
 ;;===========================================================================
 
 ;;---------------------------------------------------------------------------
-;;
+;; 
 ;; Add my personal elisp lib to the load path
 (setq load-path (cons "~/.emacs.d/elisp" load-path))
 
 (setq inhibit-splash-screen t)        ;; no splash screen at startup
+(tool-bar-mode -1)                    ;; no graphical toolbar
 (setq inhibit-default-init t)         ;; disable loading of
                                       ;; "default.el" at startup
 
@@ -23,6 +24,7 @@
 (setq frame-title-format              ;; default to better frame
                                       ;;   titles 
       (concat  "%b - emacs@" (system-name)))
+(defalias 'list-buffers 'ibuffer)     ;; Use ibuffer instead of plain buffer list
 (setq diff-switches "-u")             ;; default to unified diffs
 (setq require-final-newline 'query)   ;; always end a file with a
                                       ;;   newline
@@ -86,11 +88,63 @@
 (setq use-package-always-ensure t
       use-package-verbose t)
 
-;; Ivy - https://goo.gl/uv6e2k
-;; Configure to use ivy-mode for completion
-(use-package ivy
+;; Try - Allows one to try a new package without adding it to
+;; use-package. The package will go away the next time emacs is
+;; restarted
+(use-package try
+  :ensure t)
+  
+;; which-key - https://goo.gl/vYPnea
+;; Displays key bindings for buffer. After starting a command
+;; sequence, it will show possible completions. For instance, hit C-x,
+;; wait a sec, and a help window will pop up 
+(use-package which-key
+  :ensure t  ;; make sure it loads correctly
   :init
-  (ivy-mode 1))
+  (which-key-mode)  ;; turn on which-key mode
+  ;; try to use a side window if there is room, otherwise
+  ;;   use a bottom window 
+  (which-key-setup-side-window-right-bottom))
+
+
+;; Ivy/Counsel/Swiper - https://goo.gl/uv6e2k
+;; Configure to use ivy-mode for completion
+;; These config lines stolen from - https://tinyurl.com/yxas68kw
+(use-package ivy
+  :defer 0.1
+  :diminish
+  :bind (("C-c C-r" . ivy-resume)
+         ("C-x B" . ivy-switch-buffer-other-window))
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-use-virtual-buffers t)
+  :config (ivy-mode))
+
+(use-package counsel
+  :after ivy
+  :config (counsel-mode))
+
+(use-package ivy-rich
+  :ensure t
+  :after (:all ivy counsel)
+  :init (setq ivy-rich-parse-remote-file-path t)
+  :config (ivy-rich-mode 1))
+
+(use-package swiper
+  :after ivy
+  :bind (("C-s" . swiper)
+         ("C-r" . swiper)))
+
+;; command-log-mode
+;; - Displays commands key strokes and the associated functions in a
+;;   right hand buffer
+;; - Must first enable it for the buffer
+;;   - M-x command-log-mode
+;; - Then enable the display buffer
+;;   - M-x clm/toggle-command-log-buffer OR
+;;   - C-c o
+(use-package command-log-mode
+  :ensure t)
 
 ;; Magit - https://magit.vc/
 ;;   Interface to Git
@@ -111,17 +165,6 @@
 (use-package smartscan
   :init
   (smartscan-mode 1))
-
-;; which-key - https://goo.gl/vYPnea
-;; Displays key bindings for buffer. After starting a command
-;; sequence, it will show possible completions. For instance, hit C-x,
-;; wait a sec, and a help window will pop up 
-  (use-package which-key
-   :init
-   (which-key-mode)  ;; turn on which-key mode
-   ;; try to use a side window if there is room, otherwise
-   ;;   use a bottom window 
-   (which-key-setup-side-window-right-bottom))
 
 ;; smart-mode-line - https://goo.gl/cJjp28
 ;; makes your modeline smarter
@@ -173,6 +216,12 @@
 ;;
 ;; Org Mode
 ;;
+;; org-bullets - enables the use of nice graphical bullets for lists
+(use-package org-bullets
+  :ensure t
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+
 ;; The following lines are always needed. Choose your own keys.
 ;;(global-set-key "\C-cl" 'org-store-link)
 ;;(global-set-key "\C-ca" 'org-agenda)
@@ -235,12 +284,14 @@
      ("FIXME" . "#dc752f")
      ("XXX+" . "#dc752f")
      ("\\?\\?\\?+" . "#dc752f")))
+ '(ivy-count-format "(%d/%d) " t)
+ '(ivy-use-virtual-buffers t t)
  '(linum-format " %7i ")
  '(lsp-ui-doc-border "#665c54")
  '(nrepl-message-colors
    '("#9d0006" "#af3a03" "#b57614" "#747400" "#c6c148" "#004858" "#689d6a" "#d3869b" "#8f3f71"))
  '(package-selected-packages
-   '(ggtags flycheck elpy nhexl-mode dimmer dired-du sublime-themes white-sand-theme solarized-theme spacemacs-theme markdown-mode magit powerline which-key use-package smartscan neotree ivy diffview))
+   '(ivy-rich counsel ggtags flycheck elpy nhexl-mode dimmer dired-du sublime-themes white-sand-theme solarized-theme spacemacs-theme markdown-mode magit powerline which-key use-package smartscan neotree ivy diffview))
  '(pdf-view-midnight-colors '("#655370" . "#fbf8ef"))
  '(pos-tip-background-color "#ebdbb2")
  '(pos-tip-foreground-color "#665c54")
